@@ -2,10 +2,22 @@ import {
   ApolloClient,
   createHttpLink,
   InMemoryCache,
+  defaultDataIdFromObject,
 } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
 import auth from './auth';
-const cache = new InMemoryCache();
+false && defaultDataIdFromObject;
+const cache = new InMemoryCache({
+  //getting default id is broken
+  // dataIdFromObject(responseObject) {
+  //   if (responseObject?.scopedPrice?.country) {
+  //     return `${defaultDataIdFromObject(responseObject)}:${
+  //       responseObject?.scopedPrice?.country
+  //     }`;
+  //   }
+  //   return defaultDataIdFromObject(responseObject);
+  // },
+});
 const httpLink = createHttpLink({
   uri: 'https://api.europe-west1.gcp.commercetools.com/sunrise-spa/graphql',
 });

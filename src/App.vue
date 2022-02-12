@@ -14,13 +14,13 @@
 import { ref } from '@vue/reactivity';
 import { computed, watch } from '@vue/runtime-core';
 import { useQuery } from '@vue/apollo-composable';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client/core';
 
 const query = gql`
   query products(
-    $locale: Locale!
-    $limit: Int!
-    $offset: Int!
+    $locale: Locale! = "en"
+    $limit: Int! = 1
+    $offset: Int! = 0
     $priceSelector: PriceSelectorInput!
     $sorts: [String!] = []
     $filters: [SearchFilterInput!] = []
@@ -90,10 +90,11 @@ export default {
     };
     watch;
     watch(priceSelector, (priceSelector) => {
+      console.log(
+        'same ref?',
+        variables.value.priceSelector === priceSelector
+      );
       variables.value = {
-        locale: locale.value,
-        limit: limit.value,
-        offset: offset.value,
         priceSelector,
       };
     });
