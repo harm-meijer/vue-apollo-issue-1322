@@ -39,6 +39,10 @@ const query = gql`
           id
           scopedPrice {
             country
+            value {
+              currencyCode
+              centAmount
+            }
           }
         }
       }
@@ -76,7 +80,7 @@ export default {
         ?.results?.[0]?.name,
       priceCountry:
         result?.value?.productProjectionSearch?.results?.[0]
-          ?.masterVariant?.scopedPrice?.country,
+          ?.masterVariant?.scopedPrice,
     }));
     const toggleCountry = () => {
       if (country.value === 'US') {
@@ -90,10 +94,6 @@ export default {
     };
     watch;
     watch(priceSelector, (priceSelector) => {
-      console.log(
-        'same ref?',
-        variables.value.priceSelector === priceSelector
-      );
       variables.value = {
         priceSelector,
       };
