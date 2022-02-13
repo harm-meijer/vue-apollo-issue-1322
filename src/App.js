@@ -21,6 +21,8 @@ const query = gql`
       results {
         name(locale: $locale)
         masterVariant {
+          # If you do the following it will work
+          # anythingButId: id
           id
           scopedPrice {
             country
