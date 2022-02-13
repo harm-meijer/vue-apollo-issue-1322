@@ -15,6 +15,7 @@ import { ref } from '@vue/reactivity';
 import { computed, watch } from '@vue/runtime-core';
 import { useQuery } from '@vue/apollo-composable';
 import { gql } from '@apollo/client/core';
+import { cache } from './apollo';
 
 const query = gql`
   query products(
@@ -36,13 +37,11 @@ const query = gql`
       results {
         name(locale: $locale)
         masterVariant {
+          # If you do the following it will work
+          # anythingButId: id
           id
           scopedPrice {
             country
-            value {
-              currencyCode
-              centAmount
-            }
           }
         }
       }
@@ -53,9 +52,6 @@ const query = gql`
 export default {
   name: 'App',
   setup() {
-    const locale = ref('en');
-    const limit = ref(1);
-    const offset = ref(0);
     const country = ref('US');
     const priceSelector = computed(() => {
       return {
@@ -64,9 +60,9 @@ export default {
       }[country.value];
     });
     const variables = ref({
-      locale: locale.value,
-      limit: limit.value,
-      offset: offset.value,
+      locale: 'en',
+      limit: 1,
+      offset: 0,
       priceSelector: priceSelector.value,
     });
     const { result } = useQuery(
@@ -75,13 +71,21 @@ export default {
       //uncomment this makes it work but refetches
       // { fetchPolicy: 'no-cache' }
     );
-    const first = computed(() => ({
-      name: result?.value?.productProjectionSearch
-        ?.results?.[0]?.name,
-      priceCountry:
-        result?.value?.productProjectionSearch?.results?.[0]
-          ?.masterVariant?.scopedPrice,
-    }));
+    const first = computed(() => {
+      if (result.value) {
+        console.log(
+          'cache is now:',
+          JSON.stringify(cache.extract(), undefined, 2)
+        );
+      }
+      return {
+        name: result?.value?.productProjectionSearch
+          ?.results?.[0]?.name,
+        priceCountry:
+          result?.value?.productProjectionSearch
+            ?.results?.[0]?.masterVariant?.scopedPrice,
+      };
+    });
     const toggleCountry = () => {
       if (country.value === 'US') {
         country.value = 'DE';

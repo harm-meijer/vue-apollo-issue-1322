@@ -5,7 +5,7 @@ import {
   defaultDataIdFromObject,
 } from '@apollo/client/core';
 import auth from './auth';
-const cache = new InMemoryCache({
+export const cache = new InMemoryCache({
   //getting default id is broken
   dataIdFromObject(responseObject) {
     if (responseObject?.scopedPrice?.country) {
