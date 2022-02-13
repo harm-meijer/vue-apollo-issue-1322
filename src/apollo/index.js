@@ -6,7 +6,7 @@ import {
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import auth from './auth';
-const cache = new InMemoryCache({
+export const cache = new InMemoryCache({
   // getting default id is broken
   dataIdFromObject(responseObject) {
     if (responseObject?.scopedPrice?.country) {
@@ -15,9 +15,9 @@ const cache = new InMemoryCache({
         defaultDataIdFromObject(responseObject),
         responseObject.scopedPrice
       );
-      return `${defaultDataIdFromObject(responseObject)}:${
-        responseObject?.scopedPrice?.country
-      }`;
+      // return `${defaultDataIdFromObject(responseObject)}:${
+      //   responseObject?.scopedPrice?.country
+      // }`;
     }
     return defaultDataIdFromObject(responseObject);
   },

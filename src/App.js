@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
+import { cache } from './apollo';
 
 const query = gql`
   query products(
@@ -17,7 +18,6 @@ const query = gql`
       priceSelector: $priceSelector
       filters: $filters
     ) {
-      total
       results {
         name(locale: $locale)
         masterVariant {
@@ -57,6 +57,13 @@ const App = () => {
         data?.productProjectionSearch?.results?.[0]
           ?.masterVariant?.scopedPrice?.country,
     });
+    if (data) {
+      console.log(
+        'cache is now:',
+
+        JSON.stringify(cache.extract(), undefined, 2)
+      );
+    }
   }, [data]);
   const toggleCountry = () => {
     if (country === 'US') {
